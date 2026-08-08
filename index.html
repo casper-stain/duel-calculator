@@ -2,285 +2,995 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-  <title>Рюкзак</title>
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+  >
+
+  <title>🎒 Рюкзак</title>
 
   <style>
     * {
       box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #f5f5f7;
+      --card: #ffffff;
+      --text: #1c1c1e;
+      --secondary: #8e8e93;
+      --border: #e5e5ea;
+      --input: #ffffff;
+      --accent: #007aff;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #111113;
+        --card: #1c1c1e;
+        --text: #ffffff;
+        --secondary: #98989f;
+        --border: #2c2c2e;
+        --input: #1c1c1e;
+        --accent: #0a84ff;
+      }
+    }
+
+    html,
+    body {
+      width: 100%;
+      min-height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        Helvetica,
+        Arial,
+        sans-serif;
     }
 
     body {
-      margin: 0;
       padding: 16px;
-      font-family: Arial, sans-serif;
-      background: #f2f2f7;
-      color: #111;
+      padding-bottom: 30px;
     }
 
-    .container {
-      max-width: 600px;
+    .app {
+      width: 100%;
+      max-width: 700px;
       margin: 0 auto;
     }
 
-    h1 {
-      margin: 5px 0 5px;
-      font-size: 28px;
+    /* =========================
+       HEADER
+       ========================= */
+
+    .header {
+      margin-bottom: 16px;
+    }
+
+    .title {
+      font-size: 26px;
+      font-weight: 700;
+      line-height: 1.2;
     }
 
     .subtitle {
-      color: #777;
-      margin-bottom: 20px;
+      margin-top: 5px;
+      font-size: 14px;
+      color: var(--secondary);
     }
 
-    .resource {
-      background: white;
+    /* =========================
+       SEARCH
+       ========================= */
+
+    .search-wrapper {
+      position: relative;
+      margin-bottom: 18px;
+    }
+
+    .search {
+      width: 100%;
+      height: 46px;
+      padding: 0 15px 0 44px;
+
+      border: 1px solid var(--border);
       border-radius: 14px;
+
+      outline: none;
+
+      background: var(--input);
+      color: var(--text);
+
+      font-size: 16px;
+
+      -webkit-appearance: none;
+    }
+
+    .search:focus {
+      border-color: var(--accent);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+
+      font-size: 19px;
+      pointer-events: none;
+    }
+
+    /* =========================
+       GRID
+       ========================= */
+
+    .grid {
+      display: grid;
+
+      grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+      gap: 12px;
+    }
+
+    /* =========================
+       RESOURCE CARD
+       ========================= */
+
+    .resource-card {
+      position: relative;
+
+      aspect-ratio: 1 / 1;
+
+      min-width: 0;
+
       padding: 14px;
-      margin-bottom: 10px;
+
+      border: 1px solid var(--border);
+      border-radius: 18px;
+
+      background: var(--card);
+
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+
+      text-align: center;
+
+      cursor: pointer;
+
+      transition:
+        transform 0.12s ease,
+        box-shadow 0.12s ease;
+    }
+
+    .resource-card:active {
+      transform: scale(0.97);
+    }
+
+    .resource-icon {
+      width: 64px;
+      height: 64px;
+
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      gap: 10px;
+      justify-content: center;
+
+      margin-bottom: 10px;
+
+      font-size: 48px;
+      line-height: 1;
     }
 
     .resource-name {
-      font-size: 15px;
-      flex: 1;
-    }
-
-    .amount {
-      width: 100px;
-      padding: 10px;
-      border: 1px solid #ddd;
-      border-radius: 10px;
-      font-size: 16px;
-      text-align: right;
-    }
-
-    .save {
       width: 100%;
-      padding: 15px;
+
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 1.25;
+
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+
+      overflow: hidden;
+    }
+
+    .resource-amount {
+      margin-top: 7px;
+
+      font-size: 17px;
+      font-weight: 700;
+
+      color: var(--accent);
+    }
+
+    /* =========================
+       EMPTY SEARCH
+       ========================= */
+
+    .empty {
+      display: none;
+
+      padding: 40px 20px;
+
+      text-align: center;
+
+      color: var(--secondary);
+      font-size: 15px;
+    }
+
+    /* =========================
+       LOADING
+       ========================= */
+
+    .loading {
+      padding: 40px 20px;
+
+      text-align: center;
+
+      color: var(--secondary);
+      font-size: 15px;
+    }
+
+    /* =========================
+       MODAL
+       ========================= */
+
+    .modal-overlay {
+      position: fixed;
+
+      inset: 0;
+
+      background: rgba(0, 0, 0, 0.45);
+
+      display: none;
+
+      align-items: flex-end;
+      justify-content: center;
+
+      z-index: 100;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal {
+      width: 100%;
+      max-width: 700px;
+
+      padding: 20px;
+
+      background: var(--card);
+
+      border-radius: 22px 22px 0 0;
+    }
+
+    .modal-icon {
+      text-align: center;
+
+      font-size: 50px;
+
+      margin-bottom: 8px;
+    }
+
+    .modal-title {
+      text-align: center;
+
+      font-size: 20px;
+      font-weight: 700;
+
+      line-height: 1.3;
+    }
+
+    .modal-current {
+      margin-top: 6px;
+
+      text-align: center;
+
+      color: var(--secondary);
+      font-size: 14px;
+    }
+
+    .amount-input {
+      width: 100%;
+      height: 52px;
+
+      margin-top: 18px;
+
+      padding: 0 15px;
+
+      border: 1px solid var(--border);
+      border-radius: 14px;
+
+      outline: none;
+
+      background: var(--input);
+      color: var(--text);
+
+      text-align: center;
+
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    .amount-input:focus {
+      border-color: var(--accent);
+    }
+
+    .modal-close {
+      width: 100%;
+      height: 48px;
+
+      margin-top: 10px;
+
       border: 0;
       border-radius: 14px;
-      background: #2481cc;
-      color: white;
-      font-size: 17px;
-      font-weight: bold;
-      margin: 10px 0 20px;
+
+      background: var(--bg);
+      color: var(--text);
+
+      font-size: 16px;
+      font-weight: 600;
+
+      cursor: pointer;
     }
 
-    .status {
-      text-align: center;
-      color: #777;
-      margin-bottom: 15px;
+    /* =========================
+       DESKTOP
+       ========================= */
+
+    @media (min-width: 600px) {
+      .grid {
+        grid-template-columns:
+          repeat(3, minmax(0, 1fr));
+      }
     }
 
-    .error {
-      color: #d33;
-      text-align: center;
-      padding: 20px;
+    /* =========================
+       SMALL PHONES
+       ========================= */
+
+    @media (max-width: 360px) {
+      body {
+        padding: 12px;
+      }
+
+      .grid {
+        gap: 9px;
+      }
+
+      .resource-card {
+        padding: 10px;
+        border-radius: 15px;
+      }
+
+      .resource-icon {
+        width: 52px;
+        height: 52px;
+        font-size: 40px;
+      }
+
+      .resource-name {
+        font-size: 12px;
+      }
+
+      .resource-amount {
+        font-size: 15px;
+      }
     }
   </style>
 </head>
 
 <body>
 
-<div class="container">
+<div class="app">
 
-  <h1>🎒 Рюкзак</h1>
+  <div class="header">
+    <div class="title">🎒 Рюкзак</div>
 
-  <div class="subtitle">
-    Изменения сохраняются автоматически
+    <div class="subtitle">
+      Управление ресурсами
+    </div>
   </div>
 
-  <div id="status" class="status">
-    Загрузка...
+  <div class="search-wrapper">
+
+    <span class="search-icon">🔎</span>
+
+    <input
+      id="search"
+      class="search"
+      type="text"
+      placeholder="Поиск ресурса..."
+      autocomplete="off"
+      oninput="filterResources()"
+    >
+
   </div>
 
-  <div id="resources"></div>
+  <div id="loading" class="loading">
+    Загружаем рюкзак...
+  </div>
 
-  <button class="save" onclick="saveBackpack()">
-    💾 Сохранить
-  </button>
+  <div id="grid" class="grid"></div>
+
+  <div id="empty" class="empty">
+    Ничего не найдено
+  </div>
 
 </div>
 
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+<!-- =========================
+     EDIT MODAL
+     ========================= -->
+
+<div
+  id="modalOverlay"
+  class="modal-overlay"
+  onclick="closeModal(event)"
+>
+
+  <div
+    class="modal"
+    onclick="event.stopPropagation()"
+  >
+
+    <div id="modalIcon" class="modal-icon">
+      📦
+    </div>
+
+    <div id="modalTitle" class="modal-title">
+      Ресурс
+    </div>
+
+    <div id="modalCurrent" class="modal-current">
+      Текущее количество: 0
+    </div>
+
+    <input
+      id="amountInput"
+      class="amount-input"
+      type="number"
+      min="0"
+      step="1"
+      inputmode="numeric"
+      autocomplete="off"
+    >
+
+    <button
+      class="modal-close"
+      onclick="closeModal()"
+    >
+      Закрыть
+    </button>
+
+  </div>
+
+</div>
+
 
 <script>
 
-const tg = window.Telegram.WebApp;
+  /* =========================
+     РЕСУРСЫ
+     ========================= */
 
-tg.ready();
-tg.expand();
+  const RESOURCES = [
+    'Золото',
+    'Карты героев SSR-ранга',
+    'Самовыбор книг опыта бойца',
+    'Самовыбор рун дракона',
+    'Самовыбор строительства замка',
+    'Идеальное заклинание призыва',
+    'Продвинутое заклинание призыва',
+    'Кровь титана',
+    'Флакон стихий',
+    'Зелье удачи',
+    'Укрепляющее зелье',
+    'Элитный камень души дракона',
+    'Камень души дракона',
+    'Камень',
+    'Кузнечный молот',
+    'Идеальное заклинание призыва (переработано)',
+    'Продвинутое заклинание призыва (переработано)',
+    'Элитный камень души дракона (переработано)',
+    'Камень души дракона (переработано)',
+    'Кровь титана (переработано)',
+    'Флакон стихий (переработано)',
+    'Дерево',
+    'Сталь',
 
-const API_URL =
-  'https://script.google.com/macros/s/AKfycbzeyP7PEDkUcVy5nSBPN78UNhzqB9PShdKwWFG7F2QQo0EAO-AwrH1zKoNll7i_EBM/exec';
+    'Книга опыта лучниц 1-го ранга',
+    'Книга опыта лучниц 2-го ранга',
+    'Книга опыта лучниц 3-го ранга',
+    'Книга опыта лучниц 4-го ранга',
 
-const params = new URLSearchParams(window.location.search);
-const token = params.get('token');
+    'Книга опыта огненных магов 1-го ранга',
+    'Книга опыта огненных магов 2-го ранга',
+    'Книга опыта огненных магов 3-го ранга',
+    'Книга опыта огненных магов 4-го ранга',
 
-let backpack = {};
+    'Книга опыта ледяных колдуний 1-го ранга',
+    'Книга опыта ледяных колдуний 2-го ранга',
+    'Книга опыта ледяных колдуний 3-го ранга',
+    'Книга опыта ледяных колдуний 4-го ранга',
 
-async function loadBackpack() {
+    'Книга опыта гоблинов 1-го ранга',
+    'Книга опыта гоблинов 2-го ранга',
+    'Книга опыта гоблинов 3-го ранга',
+    'Книга опыта гоблинов 4-го ранга',
 
-  if (!token) {
-    showError('Не найден ключ доступа.<br>Открой рюкзак через кнопку в боте.');
-    return;
+    'Эпическая руна дракона',
+    'Идеальная руна дракона',
+    'Отличная руна дракона',
+    'Редкая руна дракона',
+
+    'Книга Мастера Таланты',
+    'Корона оракула',
+    'Осколок галереи',
+    'Реагент света'
+  ];
+
+
+  /* =========================
+     ИКОНКИ
+     ========================= */
+
+  const ICONS = {
+
+    'Золото': '🪙',
+
+    'Карты героев SSR-ранга': '🃏',
+
+    'Самовыбор книг опыта бойца': '📚',
+
+    'Самовыбор рун дракона': '🔮',
+
+    'Самовыбор строительства замка': '🏰',
+
+    'Идеальное заклинание призыва': '✨',
+
+    'Продвинутое заклинание призыва': '⭐',
+
+    'Кровь титана': '🩸',
+
+    'Флакон стихий': '🧪',
+
+    'Зелье удачи': '🍀',
+
+    'Укрепляющее зелье': '💪',
+
+    'Элитный камень души дракона': '💎',
+
+    'Камень души дракона': '🔷',
+
+    'Камень': '🪨',
+
+    'Кузнечный молот': '🔨',
+
+    'Идеальное заклинание призыва (переработано)': '✨',
+
+    'Продвинутое заклинание призыва (переработано)': '⭐',
+
+    'Элитный камень души дракона (переработано)': '💎',
+
+    'Камень души дракона (переработано)': '🔷',
+
+    'Кровь титана (переработано)': '🩸',
+
+    'Флакон стихий (переработано)': '🧪',
+
+    'Дерево': '🌲',
+
+    'Сталь': '⚙️',
+
+    'Книга опыта лучниц 1-го ранга': '📕',
+    'Книга опыта лучниц 2-го ранга': '📗',
+    'Книга опыта лучниц 3-го ранга': '📘',
+    'Книга опыта лучниц 4-го ранга': '📙',
+
+    'Книга опыта огненных магов 1-го ранга': '🔥',
+    'Книга опыта огненных магов 2-го ранга': '🔥',
+    'Книга опыта огненных магов 3-го ранга': '🔥',
+    'Книга опыта огненных магов 4-го ранга': '🔥',
+
+    'Книга опыта ледяных колдуний 1-го ранга': '❄️',
+    'Книга опыта ледяных колдуний 2-го ранга': '❄️',
+    'Книга опыта ледяных колдуний 3-го ранга': '❄️',
+    'Книга опыта ледяных колдуний 4-го ранга': '❄️',
+
+    'Книга опыта гоблинов 1-го ранга': '👺',
+    'Книга опыта гоблинов 2-го ранга': '👺',
+    'Книга опыта гоблинов 3-го ранга': '👺',
+    'Книга опыта гоблинов 4-го ранга': '👺',
+
+    'Эпическая руна дракона': '🟣',
+    'Идеальная руна дракона': '🔵',
+    'Отличная руна дракона': '🟢',
+    'Редкая руна дракона': '⚪',
+
+    'Книга Мастера Таланты': '📖',
+
+    'Корона оракула': '👑',
+
+    'Осколок галереи': '💠',
+
+    'Реагент света': '☀️'
+  };
+
+
+  /* =========================
+     ДАННЫЕ
+     ========================= */
+
+  let backpack = {};
+
+  let currentResource = null;
+
+
+  /* =========================
+     ЗАГРУЗКА
+     ========================= */
+
+  function loadBackpack() {
+
+    /*
+     * ВАЖНО:
+     * Здесь позже подключим API Google Apps Script.
+     *
+     * Пока показываем интерфейс с нулевыми
+     * значениями, чтобы можно было проверить
+     * дизайн Mini App.
+     */
+
+    RESOURCES.forEach(function(resource) {
+
+      backpack[resource] = 0;
+
+    });
+
+    document.getElementById('loading').style.display = 'none';
+
+    renderResources();
   }
 
-  try {
 
-    const url =
-      API_URL +
-      '?action=getBackpack&token=' +
-      encodeURIComponent(token);
+  /* =========================
+     ОТРИСОВКА
+     ========================= */
 
-    const response = await fetch(url);
+  function renderResources(list) {
 
-    const data = await response.json();
+    const grid =
+      document.getElementById('grid');
 
-    if (data.error) {
-      showError(data.error);
+    const empty =
+      document.getElementById('empty');
+
+    const resources =
+      list || RESOURCES;
+
+    grid.innerHTML = '';
+
+    if (resources.length === 0) {
+
+      empty.style.display = 'block';
+
       return;
+
     }
 
-    backpack = data;
+    empty.style.display = 'none';
 
-    renderBackpack();
 
-    document.getElementById('status').textContent =
-      'Данные загружены';
+    resources.forEach(function(resource) {
 
-  } catch (error) {
+      const card =
+        document.createElement('div');
 
-    showError(
-      'Не удалось загрузить рюкзак.<br>' +
-      error.message
+      card.className =
+        'resource-card';
+
+      const icon =
+        ICONS[resource] || '📦';
+
+      const amount =
+        backpack[resource] || 0;
+
+
+      card.innerHTML = `
+
+        <div class="resource-icon">
+          ${icon}
+        </div>
+
+        <div class="resource-name">
+          ${escapeHtml(resource)}
+        </div>
+
+        <div class="resource-amount">
+          ${formatNumber(amount)}
+        </div>
+
+      `;
+
+
+      card.addEventListener(
+        'click',
+        function() {
+
+          openResource(resource);
+
+        }
+      );
+
+
+      grid.appendChild(card);
+
+    });
+
+  }
+
+
+  /* =========================
+     ПОИСК
+     ========================= */
+
+  function filterResources() {
+
+    const query =
+      document
+        .getElementById('search')
+        .value
+        .trim()
+        .toLowerCase();
+
+
+    if (!query) {
+
+      renderResources();
+
+      return;
+
+    }
+
+
+    const filtered =
+      RESOURCES.filter(
+        function(resource) {
+
+          return resource
+            .toLowerCase()
+            .includes(query);
+
+        }
+      );
+
+
+    renderResources(filtered);
+
+  }
+
+
+  /* =========================
+     ОТКРЫТЬ РЕСУРС
+     ========================= */
+
+  function openResource(resource) {
+
+    currentResource =
+      resource;
+
+
+    const amount =
+      backpack[resource] || 0;
+
+
+    document
+      .getElementById('modalIcon')
+      .textContent =
+        ICONS[resource] || '📦';
+
+
+    document
+      .getElementById('modalTitle')
+      .textContent =
+        resource;
+
+
+    document
+      .getElementById('modalCurrent')
+      .textContent =
+        'Текущее количество: ' +
+        formatNumber(amount);
+
+
+    const input =
+      document
+        .getElementById('amountInput');
+
+
+    input.value =
+      amount;
+
+
+    document
+      .getElementById('modalOverlay')
+      .classList
+      .add('active');
+
+
+    setTimeout(
+      function() {
+
+        input.focus();
+
+        input.select();
+
+      },
+      100
     );
 
   }
-}
 
-function renderBackpack() {
 
-  const container =
-    document.getElementById('resources');
+  /* =========================
+     АВТОСОХРАНЕНИЕ
+     ========================= */
 
-  container.innerHTML = '';
+  document
+    .getElementById('amountInput')
+    .addEventListener(
+      'change',
+      function() {
 
-  Object.keys(backpack).forEach(function(resource) {
+        saveCurrentResource();
 
-    const row =
-      document.createElement('div');
-
-    row.className = 'resource';
-
-    row.innerHTML = `
-      <div class="resource-name">
-        ${escapeHtml(resource)}
-      </div>
-
-      <input
-        class="amount"
-        type="number"
-        min="0"
-        value="${backpack[resource] || 0}"
-        data-resource="${escapeHtml(resource)}"
-      >
-    `;
-
-    container.appendChild(row);
-
-  });
-
-}
-
-async function saveBackpack() {
-
-  const inputs =
-    document.querySelectorAll('.amount');
-
-  const status =
-    document.getElementById('status');
-
-  status.textContent =
-    'Сохранение...';
-
-  try {
-
-    for (const input of inputs) {
-
-      const resource =
-        input.dataset.resource;
-
-      const amount =
-        Number(input.value);
-
-      const url =
-        API_URL +
-        '?action=saveResource' +
-        '&token=' +
-        encodeURIComponent(token) +
-        '&resource=' +
-        encodeURIComponent(resource) +
-        '&amount=' +
-        encodeURIComponent(amount);
-
-      const response =
-        await fetch(url);
-
-      const result =
-        await response.json();
-
-      if (result.error) {
-        throw new Error(result.error);
       }
+    );
 
-      backpack[resource] =
-        amount;
+
+  document
+    .getElementById('amountInput')
+    .addEventListener(
+      'keydown',
+      function(event) {
+
+        if (event.key === 'Enter') {
+
+          event.preventDefault();
+
+          saveCurrentResource();
+
+          closeModal();
+
+        }
+
+      }
+    );
+
+
+  function saveCurrentResource() {
+
+    if (!currentResource) {
+
+      return;
+
     }
 
-    status.textContent =
-      '✅ Сохранено';
 
-  } catch (error) {
+    const input =
+      document
+        .getElementById('amountInput');
 
-    status.textContent =
-      '❌ Ошибка сохранения';
 
-    alert(error.message);
+    let value =
+      Number(input.value);
+
+
+    if (
+      !Number.isInteger(value) ||
+      value < 0
+    ) {
+
+      value = 0;
+
+      input.value = 0;
+
+    }
+
+
+    backpack[currentResource] =
+      value;
+
+
+    renderResources();
+
+
+    /*
+     * Здесь будет автоматическая
+     * отправка значения в Google Apps Script.
+     *
+     * Никакой кнопки "Сохранить"
+     * для пользователя не будет.
+     */
 
   }
 
-}
 
-function showError(message) {
+  /* =========================
+     ЗАКРЫТЬ ОКНО
+     ========================= */
 
-  document.getElementById('status').innerHTML =
-    '<div class="error">' +
-    message +
-    '</div>';
+  function closeModal(event) {
 
-  document.getElementById('resources').innerHTML =
-    '';
+    if (
+      event &&
+      event.target !==
+        document.getElementById('modalOverlay')
+    ) {
 
-}
+      return;
 
-function escapeHtml(text) {
+    }
 
-  return String(text)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;');
 
-}
+    document
+      .getElementById('modalOverlay')
+      .classList
+      .remove('active');
 
-loadBackpack();
+
+    currentResource =
+      null;
+
+  }
+
+
+  /* =========================
+     ФОРМАТ ЧИСЕЛ
+     ========================= */
+
+  function formatNumber(number) {
+
+    return Number(number)
+      .toLocaleString('ru-RU');
+
+  }
+
+
+  /* =========================
+     БЕЗОПАСНЫЙ ТЕКСТ
+     ========================= */
+
+  function escapeHtml(text) {
+
+    return text
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+
+  }
+
+
+  /* =========================
+     START
+     ========================= */
+
+  loadBackpack();
 
 </script>
 
