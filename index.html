@@ -1,439 +1,248 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-  >
-
-  <title>🎒 Рюкзак</title>
-
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    :root {
-      --bg: #f5f5f7;
-      --card: #ffffff;
-      --text: #1c1c1e;
-      --secondary: #8e8e93;
-      --border: #e5e5ea;
-      --input: #ffffff;
-      --accent: #007aff;
-    }
-
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --bg: #111113;
-        --card: #1c1c1e;
-        --text: #ffffff;
-        --secondary: #98989f;
-        --border: #2c2c2e;
-        --input: #1c1c1e;
-        --accent: #0a84ff;
-      }
-    }
-
-    html,
-    body {
-      width: 100%;
-      min-height: 100%;
-      background: var(--bg);
-      color: var(--text);
-      font-family:
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        Roboto,
-        Helvetica,
-        Arial,
-        sans-serif;
-    }
-
-    body {
-      padding: 16px;
-      padding-bottom: 30px;
-    }
-
-    .app {
-      width: 100%;
-      max-width: 700px;
-      margin: 0 auto;
-    }
-
-    /* =========================
-       HEADER
-       ========================= */
-
-    .header {
-      margin-bottom: 16px;
-    }
-
-    .title {
-      font-size: 26px;
-      font-weight: 700;
-      line-height: 1.2;
-    }
-
-    .subtitle {
-      margin-top: 5px;
-      font-size: 14px;
-      color: var(--secondary);
-    }
-
-    /* =========================
-       SEARCH
-       ========================= */
-
-    .search-wrapper {
-      position: relative;
-      margin-bottom: 18px;
-    }
-
-    .search {
-      width: 100%;
-      height: 46px;
-      padding: 0 15px 0 44px;
-
-      border: 1px solid var(--border);
-      border-radius: 14px;
-
-      outline: none;
-
-      background: var(--input);
-      color: var(--text);
-
-      font-size: 16px;
-
-      -webkit-appearance: none;
-    }
-
-    .search:focus {
-      border-color: var(--accent);
-    }
-
-    .search-icon {
-      position: absolute;
-      left: 15px;
-      top: 50%;
-      transform: translateY(-50%);
-
-      font-size: 19px;
-      pointer-events: none;
-    }
-
-    /* =========================
-       GRID
-       ========================= */
-
-    .grid {
-      display: grid;
-
-      grid-template-columns:
-        repeat(2, minmax(0, 1fr));
-
-      gap: 12px;
-    }
-
-    /* =========================
-       RESOURCE CARD
-       ========================= */
-
-    .resource-card {
-      position: relative;
-
-      aspect-ratio: 1 / 1;
-
-      min-width: 0;
-
-      padding: 14px;
-
-      border: 1px solid var(--border);
-      border-radius: 18px;
-
-      background: var(--card);
-
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-
-      text-align: center;
-
-      cursor: pointer;
-
-      transition:
-        transform 0.12s ease,
-        box-shadow 0.12s ease;
-    }
-
-    .resource-card:active {
-      transform: scale(0.97);
-    }
-
-    .resource-icon {
-      width: 64px;
-      height: 64px;
-
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      margin-bottom: 10px;
-
-      font-size: 48px;
-      line-height: 1;
-    }
-
-    .resource-name {
-      width: 100%;
-
-      font-size: 14px;
-      font-weight: 600;
-      line-height: 1.25;
-
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      -webkit-box-orient: vertical;
-
-      overflow: hidden;
-    }
-
-    .resource-amount {
-      margin-top: 7px;
-
-      font-size: 17px;
-      font-weight: 700;
-
-      color: var(--accent);
-    }
-
-    /* =========================
-       EMPTY SEARCH
-       ========================= */
-
-    .empty {
-      display: none;
-
-      padding: 40px 20px;
-
-      text-align: center;
-
-      color: var(--secondary);
-      font-size: 15px;
-    }
-
-    /* =========================
-       LOADING
-       ========================= */
-
-    .loading {
-      padding: 40px 20px;
-
-      text-align: center;
-
-      color: var(--secondary);
-      font-size: 15px;
-    }
-
-    /* =========================
-       MODAL
-       ========================= */
-
-    .modal-overlay {
-      position: fixed;
-
-      inset: 0;
-
-      background: rgba(0, 0, 0, 0.45);
-
-      display: none;
-
-      align-items: flex-end;
-      justify-content: center;
-
-      z-index: 100;
-    }
-
-    .modal-overlay.active {
-      display: flex;
-    }
-
-    .modal {
-      width: 100%;
-      max-width: 700px;
-
-      padding: 20px;
-
-      background: var(--card);
-
-      border-radius: 22px 22px 0 0;
-    }
-
-    .modal-icon {
-      text-align: center;
-
-      font-size: 50px;
-
-      margin-bottom: 8px;
-    }
-
-    .modal-title {
-      text-align: center;
-
-      font-size: 20px;
-      font-weight: 700;
-
-      line-height: 1.3;
-    }
-
-    .modal-current {
-      margin-top: 6px;
-
-      text-align: center;
-
-      color: var(--secondary);
-      font-size: 14px;
-    }
-
-    .amount-input {
-      width: 100%;
-      height: 52px;
-
-      margin-top: 18px;
-
-      padding: 0 15px;
-
-      border: 1px solid var(--border);
-      border-radius: 14px;
-
-      outline: none;
-
-      background: var(--input);
-      color: var(--text);
-
-      text-align: center;
-
-      font-size: 20px;
-      font-weight: 600;
-    }
-
-    .amount-input:focus {
-      border-color: var(--accent);
-    }
-
-    .modal-close {
-      width: 100%;
-      height: 48px;
-
-      margin-top: 10px;
-
-      border: 0;
-      border-radius: 14px;
-
-      background: var(--bg);
-      color: var(--text);
-
-      font-size: 16px;
-      font-weight: 600;
-
-      cursor: pointer;
-    }
-
-    /* =========================
-       DESKTOP
-       ========================= */
-
-    @media (min-width: 600px) {
-      .grid {
-        grid-template-columns:
-          repeat(3, minmax(0, 1fr));
-      }
-    }
-
-    /* =========================
-       SMALL PHONES
-       ========================= */
-
-    @media (max-width: 360px) {
-      body {
-        padding: 12px;
-      }
-
-      .grid {
-        gap: 9px;
-      }
-
-      .resource-card {
-        padding: 10px;
-        border-radius: 15px;
-      }
-
-      .resource-icon {
-        width: 52px;
-        height: 52px;
-        font-size: 40px;
-      }
-
-      .resource-name {
-        font-size: 12px;
-      }
-
-      .resource-amount {
-        font-size: 15px;
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<title>🎒 Рюкзак</title>
+
+<style>
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  margin: 0;
+  padding: 16px;
+  background: #f4f5f7;
+  color: #222;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.title {
+  font-size: 28px;
+  font-weight: 800;
+  margin-bottom: 4px;
+}
+
+.subtitle {
+  color: #777;
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+
+.search-wrap {
+  position: relative;
+  margin-bottom: 16px;
+}
+
+.search {
+  width: 100%;
+  height: 46px;
+  border: 0;
+  border-radius: 14px;
+  padding: 0 16px 0 44px;
+  font-size: 16px;
+  outline: none;
+  background: white;
+  box-shadow: 0 2px 10px rgba(0,0,0,.06);
+}
+
+.search-icon {
+  position: absolute;
+  left: 15px;
+  top: 12px;
+  font-size: 20px;
+  z-index: 2;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.resource-card {
+  aspect-ratio: 1 / 1;
+  background: white;
+  border-radius: 18px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  box-shadow: 0 2px 10px rgba(0,0,0,.06);
+  cursor: pointer;
+  transition: transform .12s;
+  overflow: hidden;
+}
+
+.resource-card:active {
+  transform: scale(.96);
+}
+
+.resource-icon {
+  font-size: 42px;
+  line-height: 1;
+  margin-bottom: 10px;
+}
+
+.resource-name {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.2;
+  max-height: 52px;
+  overflow: hidden;
+}
+
+.resource-amount {
+  margin-top: 9px;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.loading,
+.empty {
+  text-align: center;
+  padding: 40px 20px;
+  color: #777;
+}
+
+.empty {
+  display: none;
+}
+
+/* MODAL */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.45);
+  display: none;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 100;
+}
+
+.modal-overlay.active {
+  display: flex;
+}
+
+.modal {
+  width: 100%;
+  max-width: 520px;
+  background: white;
+  border-radius: 24px 24px 0 0;
+  padding: 24px 20px 30px;
+  animation: slideUp .18s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.modal-icon {
+  text-align: center;
+  font-size: 52px;
+  margin-bottom: 8px;
+}
+
+.modal-title {
+  text-align: center;
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.modal-current {
+  text-align: center;
+  color: #777;
+  margin-top: 8px;
+  margin-bottom: 18px;
+}
+
+.amount-input {
+  width: 100%;
+  height: 56px;
+  border: 2px solid #e5e5e5;
+  border-radius: 14px;
+  padding: 0 16px;
+  font-size: 24px;
+  text-align: center;
+  outline: none;
+}
+
+.amount-input:focus {
+  border-color: #888;
+}
+
+.modal-close {
+  width: 100%;
+  height: 50px;
+  margin-top: 14px;
+  border: 0;
+  border-radius: 14px;
+  background: #eeeeee;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+@media (min-width: 600px) {
+  body {
+    max-width: 700px;
+    margin: auto;
+  }
+
+  .grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+</style>
 </head>
 
 <body>
 
-<div class="app">
-
-  <div class="header">
-    <div class="title">🎒 Рюкзак</div>
-
-    <div class="subtitle">
-      Управление ресурсами
-    </div>
-  </div>
-
-  <div class="search-wrapper">
-
-    <span class="search-icon">🔎</span>
-
-    <input
-      id="search"
-      class="search"
-      type="text"
-      placeholder="Поиск ресурса..."
-      autocomplete="off"
-      oninput="filterResources()"
-    >
-
-  </div>
-
-  <div id="loading" class="loading">
-    Загружаем рюкзак...
-  </div>
-
-  <div id="grid" class="grid"></div>
-
-  <div id="empty" class="empty">
-    Ничего не найдено
-  </div>
-
+<div class="title">
+  🎒 Рюкзак
 </div>
 
+<div class="subtitle">
+  Управление ресурсами
+</div>
 
-<!-- =========================
-     EDIT MODAL
-     ========================= -->
+<div class="search-wrap">
+  <span class="search-icon">🔎</span>
+
+  <input
+    id="search"
+    class="search"
+    type="text"
+    placeholder="Поиск ресурса..."
+    autocomplete="off"
+    oninput="filterResources()"
+  >
+</div>
+
+<div id="loading" class="loading">
+  Загрузка...
+</div>
+
+<div id="grid" class="grid"></div>
+
+<div id="empty" class="empty">
+  Ничего не найдено
+</div>
+
+<!-- ОКНО ИЗМЕНЕНИЯ -->
 
 <div
   id="modalOverlay"
@@ -479,518 +288,537 @@
 
 </div>
 
-
 <script>
 
-  /* =========================
-     РЕСУРСЫ
-     ========================= */
+/* =========================
+   GOOGLE APPS SCRIPT
+   ========================= */
 
-  const RESOURCES = [
-    'Золото',
-    'Карты героев SSR-ранга',
-    'Самовыбор книг опыта бойца',
-    'Самовыбор рун дракона',
-    'Самовыбор строительства замка',
-    'Идеальное заклинание призыва',
-    'Продвинутое заклинание призыва',
-    'Кровь титана',
-    'Флакон стихий',
-    'Зелье удачи',
-    'Укрепляющее зелье',
-    'Элитный камень души дракона',
-    'Камень души дракона',
-    'Камень',
-    'Кузнечный молот',
-    'Идеальное заклинание призыва (переработано)',
-    'Продвинутое заклинание призыва (переработано)',
-    'Элитный камень души дракона (переработано)',
-    'Камень души дракона (переработано)',
-    'Кровь титана (переработано)',
-    'Флакон стихий (переработано)',
-    'Дерево',
-    'Сталь',
-
-    'Книга опыта лучниц 1-го ранга',
-    'Книга опыта лучниц 2-го ранга',
-    'Книга опыта лучниц 3-го ранга',
-    'Книга опыта лучниц 4-го ранга',
-
-    'Книга опыта огненных магов 1-го ранга',
-    'Книга опыта огненных магов 2-го ранга',
-    'Книга опыта огненных магов 3-го ранга',
-    'Книга опыта огненных магов 4-го ранга',
-
-    'Книга опыта ледяных колдуний 1-го ранга',
-    'Книга опыта ледяных колдуний 2-го ранга',
-    'Книга опыта ледяных колдуний 3-го ранга',
-    'Книга опыта ледяных колдуний 4-го ранга',
-
-    'Книга опыта гоблинов 1-го ранга',
-    'Книга опыта гоблинов 2-го ранга',
-    'Книга опыта гоблинов 3-го ранга',
-    'Книга опыта гоблинов 4-го ранга',
-
-    'Эпическая руна дракона',
-    'Идеальная руна дракона',
-    'Отличная руна дракона',
-    'Редкая руна дракона',
-
-    'Книга Мастера Таланты',
-    'Корона оракула',
-    'Осколок галереи',
-    'Реагент света'
-  ];
+const GAS_URL =
+  'https://script.google.com/macros/s/AKfycbzeyP7PEDkUcVy5nSBPN78UNhzqB9PShdKwWFG7F2QQo0EAO-AwrH1zKoNll7i_EBM/exec';
 
 
-  /* =========================
-     ИКОНКИ
-     ========================= */
+/* =========================
+   TOKEN
+   ========================= */
 
-  const ICONS = {
+const params =
+  new URLSearchParams(window.location.search);
 
-    'Золото': '🪙',
-
-    'Карты героев SSR-ранга': '🃏',
-
-    'Самовыбор книг опыта бойца': '📚',
-
-    'Самовыбор рун дракона': '🔮',
-
-    'Самовыбор строительства замка': '🏰',
-
-    'Идеальное заклинание призыва': '✨',
-
-    'Продвинутое заклинание призыва': '⭐',
-
-    'Кровь титана': '🩸',
-
-    'Флакон стихий': '🧪',
-
-    'Зелье удачи': '🍀',
-
-    'Укрепляющее зелье': '💪',
-
-    'Элитный камень души дракона': '💎',
-
-    'Камень души дракона': '🔷',
-
-    'Камень': '🪨',
-
-    'Кузнечный молот': '🔨',
-
-    'Идеальное заклинание призыва (переработано)': '✨',
-
-    'Продвинутое заклинание призыва (переработано)': '⭐',
-
-    'Элитный камень души дракона (переработано)': '💎',
-
-    'Камень души дракона (переработано)': '🔷',
-
-    'Кровь титана (переработано)': '🩸',
-
-    'Флакон стихий (переработано)': '🧪',
-
-    'Дерево': '🌲',
-
-    'Сталь': '⚙️',
-
-    'Книга опыта лучниц 1-го ранга': '📕',
-    'Книга опыта лучниц 2-го ранга': '📗',
-    'Книга опыта лучниц 3-го ранга': '📘',
-    'Книга опыта лучниц 4-го ранга': '📙',
-
-    'Книга опыта огненных магов 1-го ранга': '🔥',
-    'Книга опыта огненных магов 2-го ранга': '🔥',
-    'Книга опыта огненных магов 3-го ранга': '🔥',
-    'Книга опыта огненных магов 4-го ранга': '🔥',
-
-    'Книга опыта ледяных колдуний 1-го ранга': '❄️',
-    'Книга опыта ледяных колдуний 2-го ранга': '❄️',
-    'Книга опыта ледяных колдуний 3-го ранга': '❄️',
-    'Книга опыта ледяных колдуний 4-го ранга': '❄️',
-
-    'Книга опыта гоблинов 1-го ранга': '👺',
-    'Книга опыта гоблинов 2-го ранга': '👺',
-    'Книга опыта гоблинов 3-го ранга': '👺',
-    'Книга опыта гоблинов 4-го ранга': '👺',
-
-    'Эпическая руна дракона': '🟣',
-    'Идеальная руна дракона': '🔵',
-    'Отличная руна дракона': '🟢',
-    'Редкая руна дракона': '⚪',
-
-    'Книга Мастера Таланты': '📖',
-
-    'Корона оракула': '👑',
-
-    'Осколок галереи': '💠',
-
-    'Реагент света': '☀️'
-  };
+const WEB_APP_TOKEN =
+  params.get('token') || '';
 
 
-  /* =========================
-     ДАННЫЕ
-     ========================= */
+/* =========================
+   РЕСУРСЫ
+   ========================= */
 
-  let backpack = {};
+const RESOURCES = [
 
-  let currentResource = null;
+  'Золото',
+  'Карты героев SSR-ранга',
+  'Самовыбор книг опыта бойца',
+  'Самовыбор рун дракона',
+  'Самовыбор строительства замка',
+  'Идеальное заклинание призыва',
+  'Продвинутое заклинание призыва',
+  'Кровь титана',
+  'Флакон стихий',
+  'Зелье удачи',
+  'Укрепляющее зелье',
+  'Элитный камень души дракона',
+  'Камень души дракона',
+  'Камень',
+  'Кузнечный молот',
+
+  'Идеальное заклинание призыва (переработано)',
+  'Продвинутое заклинание призыва (переработано)',
+  'Элитный камень души дракона (переработано)',
+  'Камень души дракона (переработано)',
+  'Кровь титана (переработано)',
+  'Флакон стихий (переработано)',
+
+  'Дерево',
+  'Сталь',
+
+  'Книга опыта лучниц 1-го ранга',
+  'Книга опыта лучниц 2-го ранга',
+  'Книга опыта лучниц 3-го ранга',
+  'Книга опыта лучниц 4-го ранга',
+
+  'Книга опыта огненных магов 1-го ранга',
+  'Книга опыта огненных магов 2-го ранга',
+  'Книга опыта огненных магов 3-го ранга',
+  'Книга опыта огненных магов 4-го ранга',
+
+  'Книга опыта ледяных колдуний 1-го ранга',
+  'Книга опыта ледяных колдуний 2-го ранга',
+  'Книга опыта ледяных колдуний 3-го ранга',
+  'Книга опыта ледяных колдуний 4-го ранга',
+
+  'Книга опыта гоблинов 1-го ранга',
+  'Книга опыта гоблинов 2-го ранга',
+  'Книга опыта гоблинов 3-го ранга',
+  'Книга опыта гоблинов 4-го ранга',
+
+  'Эпическая руна дракона',
+  'Идеальная руна дракона',
+  'Отличная руна дракона',
+  'Редкая руна дракона',
+
+  'Книга Мастера Таланты',
+  'Корона оракула',
+  'Осколок галереи',
+  'Реагент света'
+];
 
 
-  /* =========================
-     ЗАГРУЗКА
-     ========================= */
+/* =========================
+   ИКОНКИ
+   ========================= */
 
-  function loadBackpack() {
+const ICONS = {
 
-    /*
-     * ВАЖНО:
-     * Здесь позже подключим API Google Apps Script.
-     *
-     * Пока показываем интерфейс с нулевыми
-     * значениями, чтобы можно было проверить
-     * дизайн Mini App.
-     */
+  'Золото': '🪙',
+  'Карты героев SSR-ранга': '🃏',
+  'Самовыбор книг опыта бойца': '📚',
+  'Самовыбор рун дракона': '🔮',
+  'Самовыбор строительства замка': '🏰',
 
-    RESOURCES.forEach(function(resource) {
+  'Идеальное заклинание призыва': '✨',
+  'Продвинутое заклинание призыва': '⭐',
 
-      backpack[resource] = 0;
+  'Кровь титана': '🩸',
+  'Флакон стихий': '🧪',
+  'Зелье удачи': '🍀',
+  'Укрепляющее зелье': '💪',
 
-    });
+  'Элитный камень души дракона': '💎',
+  'Камень души дракона': '🔷',
+  'Камень': '🪨',
+  'Кузнечный молот': '🔨',
 
-    document.getElementById('loading').style.display = 'none';
+  'Идеальное заклинание призыва (переработано)': '✨',
+  'Продвинутое заклинание призыва (переработано)': '⭐',
+  'Элитный камень души дракона (переработано)': '💎',
+  'Камень души дракона (переработано)': '🔷',
+  'Кровь титана (переработано)': '🩸',
+  'Флакон стихий (переработано)': '🧪',
+
+  'Дерево': '🌲',
+  'Сталь': '⚙️',
+
+  'Книга опыта лучниц 1-го ранга': '📕',
+  'Книга опыта лучниц 2-го ранга': '📗',
+  'Книга опыта лучниц 3-го ранга': '📘',
+  'Книга опыта лучниц 4-го ранга': '📙',
+
+  'Книга опыта огненных магов 1-го ранга': '🔥',
+  'Книга опыта огненных магов 2-го ранга': '🔥',
+  'Книга опыта огненных магов 3-го ранга': '🔥',
+  'Книга опыта огненных магов 4-го ранга': '🔥',
+
+  'Книга опыта ледяных колдуний 1-го ранга': '❄️',
+  'Книга опыта ледяных колдуний 2-го ранга': '❄️',
+  'Книга опыта ледяных колдуний 3-го ранга': '❄️',
+  'Книга опыта ледяных колдуний 4-го ранга': '❄️',
+
+  'Книга опыта гоблинов 1-го ранга': '👺',
+  'Книга опыта гоблинов 2-го ранга': '👺',
+  'Книга опыта гоблинов 3-го ранга': '👺',
+  'Книга опыта гоблинов 4-го ранга': '👺',
+
+  'Эпическая руна дракона': '🟣',
+  'Идеальная руна дракона': '🔵',
+  'Отличная руна дракона': '🟢',
+  'Редкая руна дракона': '⚪',
+
+  'Книга Мастера Таланты': '📖',
+  'Корона оракула': '👑',
+  'Осколок галереи': '💠',
+  'Реагент света': '☀️'
+};
+
+
+/* =========================
+   ДАННЫЕ
+   ========================= */
+
+let backpack = {};
+let currentResource = null;
+
+
+/* =========================
+   ЗАГРУЗКА
+   ========================= */
+
+async function loadBackpack() {
+
+  if (!WEB_APP_TOKEN) {
+
+    document.getElementById('loading').textContent =
+      'Не найден ключ доступа. Открой рюкзак через кнопку в боте.';
+
+    return;
+  }
+
+  try {
+
+    const url =
+      GAS_URL +
+      '?action=getBackpack' +
+      '&token=' +
+      encodeURIComponent(WEB_APP_TOKEN);
+
+    const response =
+      await fetch(url);
+
+    const data =
+      await response.json();
+
+    if (data.error) {
+      throw new Error(data.error);
+    }
+
+    backpack = data;
+
+    document.getElementById('loading').style.display =
+      'none';
 
     renderResources();
+
+  } catch (error) {
+
+    console.error(error);
+
+    document.getElementById('loading').textContent =
+      'Ошибка загрузки: ' + error.message;
+  }
+}
+
+
+/* =========================
+   ОТРИСОВКА
+   ========================= */
+
+function renderResources(list) {
+
+  const grid =
+    document.getElementById('grid');
+
+  const empty =
+    document.getElementById('empty');
+
+  const resources =
+    list || RESOURCES;
+
+  grid.innerHTML = '';
+
+  if (resources.length === 0) {
+
+    empty.style.display = 'block';
+
+    return;
   }
 
+  empty.style.display = 'none';
 
-  /* =========================
-     ОТРИСОВКА
-     ========================= */
+  resources.forEach(function(resource) {
 
-  function renderResources(list) {
+    const card =
+      document.createElement('div');
 
-    const grid =
-      document.getElementById('grid');
+    card.className =
+      'resource-card';
 
-    const empty =
-      document.getElementById('empty');
-
-    const resources =
-      list || RESOURCES;
-
-    grid.innerHTML = '';
-
-    if (resources.length === 0) {
-
-      empty.style.display = 'block';
-
-      return;
-
-    }
-
-    empty.style.display = 'none';
-
-
-    resources.forEach(function(resource) {
-
-      const card =
-        document.createElement('div');
-
-      card.className =
-        'resource-card';
-
-      const icon =
-        ICONS[resource] || '📦';
-
-      const amount =
-        backpack[resource] || 0;
-
-
-      card.innerHTML = `
-
-        <div class="resource-icon">
-          ${icon}
-        </div>
-
-        <div class="resource-name">
-          ${escapeHtml(resource)}
-        </div>
-
-        <div class="resource-amount">
-          ${formatNumber(amount)}
-        </div>
-
-      `;
-
-
-      card.addEventListener(
-        'click',
-        function() {
-
-          openResource(resource);
-
-        }
-      );
-
-
-      grid.appendChild(card);
-
-    });
-
-  }
-
-
-  /* =========================
-     ПОИСК
-     ========================= */
-
-  function filterResources() {
-
-    const query =
-      document
-        .getElementById('search')
-        .value
-        .trim()
-        .toLowerCase();
-
-
-    if (!query) {
-
-      renderResources();
-
-      return;
-
-    }
-
-
-    const filtered =
-      RESOURCES.filter(
-        function(resource) {
-
-          return resource
-            .toLowerCase()
-            .includes(query);
-
-        }
-      );
-
-
-    renderResources(filtered);
-
-  }
-
-
-  /* =========================
-     ОТКРЫТЬ РЕСУРС
-     ========================= */
-
-  function openResource(resource) {
-
-    currentResource =
-      resource;
-
+    const icon =
+      ICONS[resource] || '📦';
 
     const amount =
       backpack[resource] || 0;
 
+    card.innerHTML = `
 
-    document
-      .getElementById('modalIcon')
-      .textContent =
-        ICONS[resource] || '📦';
+      <div class="resource-icon">
+        ${icon}
+      </div>
 
+      <div class="resource-name">
+        ${escapeHtml(resource)}
+      </div>
 
-    document
-      .getElementById('modalTitle')
-      .textContent =
-        resource;
+      <div class="resource-amount">
+        ${formatNumber(amount)}
+      </div>
 
+    `;
 
-    document
-      .getElementById('modalCurrent')
-      .textContent =
-        'Текущее количество: ' +
-        formatNumber(amount);
-
-
-    const input =
-      document
-        .getElementById('amountInput');
-
-
-    input.value =
-      amount;
-
-
-    document
-      .getElementById('modalOverlay')
-      .classList
-      .add('active');
-
-
-    setTimeout(
+    card.addEventListener(
+      'click',
       function() {
-
-        input.focus();
-
-        input.select();
-
-      },
-      100
-    );
-
-  }
-
-
-  /* =========================
-     АВТОСОХРАНЕНИЕ
-     ========================= */
-
-  document
-    .getElementById('amountInput')
-    .addEventListener(
-      'change',
-      function() {
-
-        saveCurrentResource();
-
+        openResource(resource);
       }
     );
 
+    grid.appendChild(card);
 
-  document
-    .getElementById('amountInput')
-    .addEventListener(
-      'keydown',
-      function(event) {
-
-        if (event.key === 'Enter') {
-
-          event.preventDefault();
-
-          saveCurrentResource();
-
-          closeModal();
-
-        }
-
-      }
-    );
+  });
+}
 
 
-  function saveCurrentResource() {
+/* =========================
+   ПОИСК
+   ========================= */
 
-    if (!currentResource) {
+function filterResources() {
 
-      return;
+  const query =
+    document
+      .getElementById('search')
+      .value
+      .trim()
+      .toLowerCase();
 
-    }
-
-
-    const input =
-      document
-        .getElementById('amountInput');
-
-
-    let value =
-      Number(input.value);
-
-
-    if (
-      !Number.isInteger(value) ||
-      value < 0
-    ) {
-
-      value = 0;
-
-      input.value = 0;
-
-    }
-
-
-    backpack[currentResource] =
-      value;
-
+  if (!query) {
 
     renderResources();
 
-
-    /*
-     * Здесь будет автоматическая
-     * отправка значения в Google Apps Script.
-     *
-     * Никакой кнопки "Сохранить"
-     * для пользователя не будет.
-     */
-
+    return;
   }
 
+  const filtered =
+    RESOURCES.filter(function(resource) {
 
-  /* =========================
-     ЗАКРЫТЬ ОКНО
-     ========================= */
+      return resource
+        .toLowerCase()
+        .includes(query);
 
-  function closeModal(event) {
+    });
 
-    if (
-      event &&
-      event.target !==
-        document.getElementById('modalOverlay')
-    ) {
+  renderResources(filtered);
+}
 
-      return;
+
+/* =========================
+   ОТКРЫТЬ РЕСУРС
+   ========================= */
+
+function openResource(resource) {
+
+  currentResource =
+    resource;
+
+  const amount =
+    backpack[resource] || 0;
+
+  document
+    .getElementById('modalIcon')
+    .textContent =
+      ICONS[resource] || '📦';
+
+  document
+    .getElementById('modalTitle')
+    .textContent =
+      resource;
+
+  document
+    .getElementById('modalCurrent')
+    .textContent =
+      'Текущее количество: ' +
+      formatNumber(amount);
+
+  const input =
+    document.getElementById('amountInput');
+
+  input.value =
+    amount;
+
+  document
+    .getElementById('modalOverlay')
+    .classList
+    .add('active');
+
+  setTimeout(function() {
+
+    input.focus();
+    input.select();
+
+  }, 100);
+}
+
+
+/* =========================
+   АВТОСОХРАНЕНИЕ
+   ========================= */
+
+document
+  .getElementById('amountInput')
+  .addEventListener(
+    'change',
+    function() {
+
+      saveCurrentResource();
 
     }
+  );
 
 
-    document
-      .getElementById('modalOverlay')
-      .classList
-      .remove('active');
+document
+  .getElementById('amountInput')
+  .addEventListener(
+    'keydown',
+    function(event) {
+
+      if (event.key === 'Enter') {
+
+        event.preventDefault();
+
+        saveCurrentResource();
+
+        closeModal();
+
+      }
+
+    }
+  );
 
 
-    currentResource =
-      null;
+async function saveCurrentResource() {
 
+  if (!currentResource) {
+    return;
   }
 
+  const input =
+    document.getElementById('amountInput');
 
-  /* =========================
-     ФОРМАТ ЧИСЕЛ
-     ========================= */
+  let value =
+    Number(input.value);
 
-  function formatNumber(number) {
+  if (
+    !Number.isInteger(value) ||
+    value < 0
+  ) {
 
-    return Number(number)
-      .toLocaleString('ru-RU');
-
+    value = 0;
+    input.value = 0;
   }
 
+  /*
+   * Сначала сразу меняем значение
+   * на экране.
+   */
 
-  /* =========================
-     БЕЗОПАСНЫЙ ТЕКСТ
-     ========================= */
+  backpack[currentResource] =
+    value;
 
-  function escapeHtml(text) {
+  renderResources();
 
-    return text
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#039;');
+  /*
+   * Затем сохраняем в Google Apps Script.
+   */
+
+  try {
+
+    const url =
+      GAS_URL +
+      '?action=saveResource' +
+      '&token=' +
+      encodeURIComponent(WEB_APP_TOKEN) +
+      '&resource=' +
+      encodeURIComponent(currentResource) +
+      '&amount=' +
+      encodeURIComponent(value);
+
+    const response =
+      await fetch(url);
+
+    const data =
+      await response.json();
+
+    if (data.error) {
+
+      console.error(
+        'Ошибка сохранения:',
+        data.error
+      );
+
+      return;
+    }
+
+    console.log(
+      'Сохранено:',
+      currentResource,
+      value
+    );
+
+  } catch (error) {
+
+    console.error(
+      'Ошибка сохранения:',
+      error
+    );
 
   }
+}
 
 
-  /* =========================
-     START
-     ========================= */
+/* =========================
+   ЗАКРЫТЬ
+   ========================= */
 
-  loadBackpack();
+function closeModal(event) {
+
+  if (
+    event &&
+    event.target !==
+      document.getElementById('modalOverlay')
+  ) {
+
+    return;
+  }
+
+  document
+    .getElementById('modalOverlay')
+    .classList
+    .remove('active');
+
+  currentResource =
+    null;
+}
+
+
+/* =========================
+   ФОРМАТ ЧИСЕЛ
+   ========================= */
+
+function formatNumber(number) {
+
+  return Number(number)
+    .toLocaleString('ru-RU');
+}
+
+
+/* =========================
+   БЕЗОПАСНЫЙ ТЕКСТ
+   ========================= */
+
+function escapeHtml(text) {
+
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+
+/* =========================
+   START
+   ========================= */
+
+loadBackpack();
 
 </script>
 
