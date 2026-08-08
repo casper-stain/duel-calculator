@@ -2,666 +2,222 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-  >
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
   <title>Рюкзак</title>
-
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
   <style>
     * {
       box-sizing: border-box;
+    }
+
+    body {
       margin: 0;
-      padding: 0;
+      padding: 16px;
+      font-family: Arial, sans-serif;
+      background: #f2f2f7;
+      color: #111;
     }
 
-    :root {
-      --bg: var(--tg-theme-bg-color, #17212b);
-      --card: var(--tg-theme-secondary-bg-color, #202b36);
-      --text: var(--tg-theme-text-color, #ffffff);
-      --hint: var(--tg-theme-hint-color, #8a9ba8);
-      --border: var(--tg-theme-section-separator-color, #33404c);
-      --button: var(--tg-theme-button-color, #2481cc);
-      --button-text: var(--tg-theme-button-text-color, #ffffff);
-    }
-
-    html,
-    body {
-      width: 100%;
-      min-height: 100%;
-      background: var(--bg);
-      color: var(--text);
-      font-family:
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        Roboto,
-        Arial,
-        sans-serif;
-    }
-
-    body {
-      padding: 12px;
-      padding-bottom: 20px;
-    }
-
-    .app {
-      width: 100%;
-      max-width: 700px;
+    .container {
+      max-width: 600px;
       margin: 0 auto;
     }
 
-    .header {
-      padding: 8px 4px 16px;
+    h1 {
+      margin: 5px 0 5px;
+      font-size: 28px;
     }
 
-    .header-title {
-      font-size: 25px;
-      font-weight: 700;
-    }
-
-    .header-subtitle {
-      margin-top: 4px;
-      color: var(--hint);
-      font-size: 14px;
-    }
-
-    .resources {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 10px;
+    .subtitle {
+      color: #777;
+      margin-bottom: 20px;
     }
 
     .resource {
-      background: var(--card);
+      background: white;
       border-radius: 14px;
-      padding: 12px;
-      min-width: 0;
-    }
-
-    .resource-icon {
-      width: 56px;
-      height: 56px;
-      border-radius: 12px;
-      background: rgba(128, 128, 128, 0.15);
-
+      padding: 14px;
+      margin-bottom: 10px;
       display: flex;
       align-items: center;
-      justify-content: center;
-
-      font-size: 28px;
-      margin-bottom: 9px;
+      justify-content: space-between;
+      gap: 10px;
     }
 
     .resource-name {
-      font-size: 14px;
-      line-height: 18px;
-      min-height: 36px;
-      font-weight: 600;
-      word-break: break-word;
+      font-size: 15px;
+      flex: 1;
     }
 
-    .resource-current {
-      margin-top: 5px;
-      color: var(--hint);
-      font-size: 13px;
-      line-height: 18px;
-    }
-
-    .resource-input {
-      width: 100%;
-      height: 38px;
-
-      margin-top: 9px;
-      padding: 0 9px;
-
-      border: 1px solid var(--border);
-      border-radius: 9px;
-
-      outline: none;
-
-      background: var(--bg);
-      color: var(--text);
-
+    .amount {
+      width: 100px;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
       font-size: 16px;
+      text-align: right;
+    }
+
+    .save {
+      width: 100%;
+      padding: 15px;
+      border: 0;
+      border-radius: 14px;
+      background: #2481cc;
+      color: white;
+      font-size: 17px;
+      font-weight: bold;
+      margin: 10px 0 20px;
+    }
+
+    .status {
       text-align: center;
+      color: #777;
+      margin-bottom: 15px;
     }
 
-    .resource-input:focus {
-      border-color: var(--button);
-    }
-
-    .saving {
-      position: fixed;
-
-      left: 50%;
-      bottom: 18px;
-
-      transform: translateX(-50%);
-
-      background: var(--card);
-      color: var(--text);
-
-      border: 1px solid var(--border);
-      border-radius: 20px;
-
-      padding: 8px 14px;
-
-      font-size: 13px;
-
-      opacity: 0;
-      pointer-events: none;
-
-      transition: opacity 0.2s ease;
-
-      z-index: 1000;
-    }
-
-    .saving.show {
-      opacity: 1;
-    }
-
-    .loading {
+    .error {
+      color: #d33;
       text-align: center;
-      color: var(--hint);
-      padding: 40px 10px;
-    }
-
-    @media (max-width: 380px) {
-      .resources {
-        gap: 8px;
-      }
-
-      .resource {
-        padding: 10px;
-      }
-
-      .resource-name {
-        font-size: 13px;
-      }
+      padding: 20px;
     }
   </style>
 </head>
 
 <body>
 
-<div class="app">
+<div class="container">
 
-  <div class="header">
-    <div class="header-title">🎒 Рюкзак</div>
-    <div class="header-subtitle">
-      Изменения сохраняются автоматически
-    </div>
+  <h1>🎒 Рюкзак</h1>
+
+  <div class="subtitle">
+    Изменения сохраняются автоматически
   </div>
 
-  <div id="resources" class="resources">
-    <div class="loading">
-      Загрузка рюкзака...
-    </div>
+  <div id="status" class="status">
+    Загрузка...
   </div>
+
+  <div id="resources"></div>
+
+  <button class="save" onclick="saveBackpack()">
+    💾 Сохранить
+  </button>
 
 </div>
 
-<div id="saving" class="saving">
-  ✓ Сохранено
-</div>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
 
 <script>
 
-  /* =========================================================
-     TELEGRAM
-  ========================================================= */
+const tg = window.Telegram.WebApp;
 
-  const tg = window.Telegram.WebApp;
+tg.ready();
+tg.expand();
 
-  tg.ready();
-  tg.expand();
+const API_URL =
+  'https://script.google.com/macros/s/AKfycbzeyP7PEDkUcVy5nSBPN78UNhzqB9PShdKwWFG7F2QQo0EAO-AwrH1zKoNll7i_EBM/exec';
 
+const params = new URLSearchParams(window.location.search);
+const token = params.get('token');
 
-  /* =========================================================
-     НАСТРОЙКИ
-  ========================================================= */
+let backpack = {};
 
-  const API_URL =
-    'https://script.google.com/macros/s/AKfycbzeyP7PEDkUcVy5nSBPN78UNhzqB9PShdKwWFG7F2QQo0EAO-AwrH1zKoNll7i_EBM/exec';
+async function loadBackpack() {
 
-
-  /* =========================================================
-     РЕСУРСЫ
-  ========================================================= */
-
-  const RESOURCES = [
-    'Золото',
-    'Карты героев SSR-ранга',
-    'Самовыбор книг опыта бойца',
-    'Самовыбор рун дракона',
-    'Самовыбор строительства замка',
-    'Идеальное заклинание призыва',
-    'Продвинутое заклинание призыва',
-    'Кровь титана',
-    'Флакон стихий',
-    'Зелье удачи',
-    'Укрепляющее зелье',
-    'Элитный камень души дракона',
-    'Камень души дракона',
-    'Камень',
-    'Кузнечный молот',
-    'Идеальное заклинание призыва (переработано)',
-    'Продвинутое заклинание призыва (переработано)',
-    'Элитный камень души дракона (переработано)',
-    'Камень души дракона (переработано)',
-    'Кровь титана (переработано)',
-    'Флакон стихий (переработано)',
-    'Дерево',
-    'Сталь',
-
-    'Книга опыта лучниц 1-го ранга',
-    'Книга опыта лучниц 2-го ранга',
-    'Книга опыта лучниц 3-го ранга',
-    'Книга опыта лучниц 4-го ранга',
-
-    'Книга опыта огненных магов 1-го ранга',
-    'Книга опыта огненных магов 2-го ранга',
-    'Книга опыта огненных магов 3-го ранга',
-    'Книга опыта огненных магов 4-го ранга',
-
-    'Книга опыта ледяных колдуний 1-го ранга',
-    'Книга опыта ледяных колдуний 2-го ранга',
-    'Книга опыта ледяных колдуний 3-го ранга',
-    'Книга опыта ледяных колдуний 4-го ранга',
-
-    'Книга опыта гоблинов 1-го ранга',
-    'Книга опыта гоблинов 2-го ранга',
-    'Книга опыта гоблинов 3-го ранга',
-    'Книга опыта гоблинов 4-го ранга',
-
-    'Эпическая руна дракона',
-    'Идеальная руна дракона',
-    'Отличная руна дракона',
-    'Редкая руна дракона',
-
-    'Книга Мастера Таланты',
-    'Корона оракула',
-    'Осколок галереи',
-    'Реагент света'
-  ];
-
-
-  /* =========================================================
-     ИКОНКИ
-  ========================================================= */
-
-  const ICONS = [
-    '🪙',
-    '🃏',
-    '📚',
-    '🔮',
-    '🏰',
-    '✨',
-    '💫',
-    '🩸',
-    '🧪',
-    '🍀',
-    '🧴',
-    '💎',
-    '💠',
-    '🪨',
-    '🔨',
-    '✨',
-    '💫',
-    '💎',
-    '💠',
-    '🩸',
-    '🧪',
-    '🪵',
-    '⚙️',
-
-    '📘',
-    '📗',
-    '📙',
-    '📕',
-
-    '🔥',
-    '🔥',
-    '🔥',
-    '🔥',
-
-    '❄️',
-    '❄️',
-    '❄️',
-    '❄️',
-
-    '👺',
-    '👺',
-    '👺',
-    '👺',
-
-    '🔵',
-    '🟣',
-    '🟢',
-    '⚪',
-
-    '📖',
-    '👑',
-    '🖼️',
-    '☀️'
-  ];
-
-
-  /* =========================================================
-     TOKEN
-  ========================================================= */
-
-  const urlParams = new URLSearchParams(
-    window.location.search
-  );
-
-  const token =
-    urlParams.get('token') || '';
-
-
-  /* =========================================================
-     СОХРАНЕНИЕ УВЕДОМЛЕНИЯ
-  ========================================================= */
-
-  let savingTimer = null;
-
-  function showSaved() {
-
-    const element =
-      document.getElementById('saving');
-
-    element.classList.add('show');
-
-    clearTimeout(savingTimer);
-
-    savingTimer =
-      setTimeout(function () {
-
-        element.classList.remove('show');
-
-      }, 1000);
+  if (!token) {
+    showError('Не найден ключ доступа.<br>Открой рюкзак через кнопку в боте.');
+    return;
   }
 
+  try {
 
-  /* =========================================================
-     JSONP
-  ========================================================= */
+    const url =
+      API_URL +
+      '?action=getBackpack&token=' +
+      encodeURIComponent(token);
 
-  let callbackCounter = 0;
+    const response = await fetch(url);
 
-  function jsonp(url) {
+    const data = await response.json();
 
-    return new Promise(function(resolve, reject) {
-
-      const callbackName =
-        'telegramMiniAppCallback_' +
-        Date.now() +
-        '_' +
-        callbackCounter++;
-
-      const script =
-        document.createElement('script');
-
-      const timeout =
-        setTimeout(function() {
-
-          cleanup();
-
-          reject(
-            new Error('Превышено время ожидания')
-          );
-
-        }, 15000);
-
-
-      function cleanup() {
-
-        clearTimeout(timeout);
-
-        if (script.parentNode) {
-          script.parentNode.removeChild(script);
-        }
-
-        delete window[callbackName];
-      }
-
-
-      window[callbackName] =
-        function(data) {
-
-          cleanup();
-
-          resolve(data);
-        };
-
-
-      script.onerror =
-        function() {
-
-          cleanup();
-
-          reject(
-            new Error('Ошибка подключения')
-          );
-
-        };
-
-
-      script.src =
-        url +
-        '&callback=' +
-        encodeURIComponent(callbackName);
-
-      document.body.appendChild(script);
-
-    });
-  }
-
-
-  /* =========================================================
-     ЗАГРУЗКА РЮКЗАКА
-  ========================================================= */
-
-  async function loadBackpack() {
-
-    const container =
-      document.getElementById('resources');
-
-    if (!token) {
-
-      container.innerHTML =
-        '<div class="loading">' +
-        'Не найден ключ доступа.<br>' +
-        'Открой рюкзак через кнопку в боте.' +
-        '</div>';
-
+    if (data.error) {
+      showError(data.error);
       return;
     }
 
+    backpack = data;
 
-    try {
+    renderBackpack();
 
-      const url =
-        API_URL +
-        '?action=getBackpack' +
-        '&token=' +
-        encodeURIComponent(token);
+    document.getElementById('status').textContent =
+      'Данные загружены';
 
-      const data =
-        await jsonp(url);
+  } catch (error) {
 
-      if (!data.success) {
-        throw new Error(
-          data.error || 'Ошибка загрузки'
-        );
-      }
-
-      renderResources(data.backpack);
-
-    } catch (error) {
-
-      console.error(error);
-
-      container.innerHTML =
-        '<div class="loading">' +
-        'Не удалось загрузить рюкзак.<br><br>' +
-        'Открой его заново через бота.' +
-        '</div>';
-    }
-  }
-
-
-  /* =========================================================
-     ОТРИСОВКА
-  ========================================================= */
-
-  function renderResources(backpack) {
-
-    const container =
-      document.getElementById('resources');
-
-    container.innerHTML = '';
-
-
-    RESOURCES.forEach(
-      function(resource, index) {
-
-        const value =
-          backpack[resource] || 0;
-
-
-        const card =
-          document.createElement('div');
-
-        card.className =
-          'resource';
-
-
-        const icon =
-          document.createElement('div');
-
-        icon.className =
-          'resource-icon';
-
-        icon.textContent =
-          ICONS[index] || '📦';
-
-
-        const name =
-          document.createElement('div');
-
-        name.className =
-          'resource-name';
-
-        name.textContent =
-          resource;
-
-
-        const current =
-          document.createElement('div');
-
-        current.className =
-          'resource-current';
-
-        current.textContent =
-          'Сейчас: ' + value;
-
-
-        const input =
-          document.createElement('input');
-
-        input.className =
-          'resource-input';
-
-        input.type =
-          'number';
-
-        input.min =
-          '0';
-
-        input.step =
-          '1';
-
-        input.value =
-          value;
-
-
-        let saveTimer = null;
-
-
-        input.addEventListener(
-          'input',
-          function() {
-
-            current.textContent =
-              'Сейчас: ' + input.value;
-
-
-            clearTimeout(saveTimer);
-
-
-            saveTimer =
-              setTimeout(
-                function() {
-
-                  saveResource(
-                    resource,
-                    input.value,
-                    current
-                  );
-
-                },
-                500
-              );
-
-          }
-        );
-
-
-        card.appendChild(icon);
-        card.appendChild(name);
-        card.appendChild(current);
-        card.appendChild(input);
-
-        container.appendChild(card);
-
-      }
+    showError(
+      'Не удалось загрузить рюкзак.<br>' +
+      error.message
     );
+
   }
+}
 
+function renderBackpack() {
 
-  /* =========================================================
-     СОХРАНЕНИЕ РЕСУРСА
-  ========================================================= */
+  const container =
+    document.getElementById('resources');
 
-  async function saveResource(
-    resource,
-    amount,
-    currentElement
-  ) {
+  container.innerHTML = '';
 
-    if (!token) {
-      return;
-    }
+  Object.keys(backpack).forEach(function(resource) {
 
+    const row =
+      document.createElement('div');
 
-    const number =
-      Number(amount);
+    row.className = 'resource';
 
+    row.innerHTML = `
+      <div class="resource-name">
+        ${escapeHtml(resource)}
+      </div>
 
-    if (
-      !Number.isInteger(number) ||
-      number < 0
-    ) {
-      return;
-    }
+      <input
+        class="amount"
+        type="number"
+        min="0"
+        value="${backpack[resource] || 0}"
+        data-resource="${escapeHtml(resource)}"
+      >
+    `;
 
+    container.appendChild(row);
 
-    try {
+  });
+
+}
+
+async function saveBackpack() {
+
+  const inputs =
+    document.querySelectorAll('.amount');
+
+  const status =
+    document.getElementById('status');
+
+  status.textContent =
+    'Сохранение...';
+
+  try {
+
+    for (const input of inputs) {
+
+      const resource =
+        input.dataset.resource;
+
+      const amount =
+        Number(input.value);
 
       const url =
         API_URL +
@@ -671,42 +227,60 @@
         '&resource=' +
         encodeURIComponent(resource) +
         '&amount=' +
-        encodeURIComponent(number);
+        encodeURIComponent(amount);
 
+      const response =
+        await fetch(url);
 
       const result =
-        await jsonp(url);
+        await response.json();
 
-
-      if (!result.success) {
-        throw new Error(
-          result.error || 'Ошибка сохранения'
-        );
+      if (result.error) {
+        throw new Error(result.error);
       }
 
-
-      currentElement.textContent =
-        'Сейчас: ' + number;
-
-
-      showSaved();
-
-
-    } catch (error) {
-
-      console.error(error);
-
-      currentElement.textContent =
-        'Ошибка сохранения';
+      backpack[resource] =
+        amount;
     }
+
+    status.textContent =
+      '✅ Сохранено';
+
+  } catch (error) {
+
+    status.textContent =
+      '❌ Ошибка сохранения';
+
+    alert(error.message);
+
   }
 
+}
 
-  /* =========================================================
-     ЗАПУСК
-  ========================================================= */
+function showError(message) {
 
-  loadBackpack();
+  document.getElementById('status').innerHTML =
+    '<div class="error">' +
+    message +
+    '</div>';
+
+  document.getElementById('resources').innerHTML =
+    '';
+
+}
+
+function escapeHtml(text) {
+
+  return String(text)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+
+}
+
+loadBackpack();
 
 </script>
 
